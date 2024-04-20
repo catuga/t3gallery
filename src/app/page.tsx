@@ -3,6 +3,8 @@ import "~/styles/globals.css";
 import { Inter } from "next/font/google";
 import { db } from "~/server/db";
 
+export const dynamic = "force-dynamic";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans"
@@ -27,16 +29,13 @@ const mockImages = mockUrls.map((url, index) => ({
 }));
 
 export default async function HomePage() {
-
   const posts = await db.query.posts.findMany();
-
-  console.log(posts);
 
   return (
     <main className="">
       <div className="flex flex-wrap justify-center gap-4 p-4">
-        {posts.map((post) => (
-          <div key="{post.id}">{post.name}</div>
+        {posts.map((post, index) => (
+          <div key={post.id + "-" + index}>{post.name}</div>
         ))}
         {[...mockImages, ...mockImages, ...mockImages].map((image, index) => (
           <div key={image.id + "-" + index} className="flex h-48 w-48 flex-col">
