@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 
 import { Inter } from "next/font/google";
+import { db } from "~/server/db";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,16 +26,24 @@ const mockImages = mockUrls.map((url, index) => ({
   url
 }));
 
-export default function HomePage() {
+export default async function HomePage() {
+
+  const posts = await db.query.posts.findMany();
+
+  console.log(posts);
+
   return (
     <main className="">
-      <div className="flex flex-wrap gap-4">{
-        [...mockImages, ...mockImages, ...mockImages].map((image) => (
-          <div key={image.id} className="w-1/2 p-4">
+      <div className="flex flex-wrap justify-center gap-4 p-4">
+        {posts.map((post) => (
+          <div key="{post.id}">{post.name}</div>
+        ))}
+        {[...mockImages, ...mockImages, ...mockImages].map((image, index) => (
+          <div key={image.id + "-" + index} className="flex h-48 w-48 flex-col">
             <img src={image.url} alt="image" />
           </div>
-        ))
-      }</div>
+        ))}
+      </div>
     </main>
   );
 }
